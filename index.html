@@ -1,0 +1,93 @@
+<!doctype html>
+<html>
+	<head>
+		<title>
+			Tournament buttons
+		</title>
+		<base target="_blank">
+		<script src="https://epicenterprograms.github.io/standards/behavior/general.js"></script>
+		<script>
+			var S = Standards.general;
+			var clicked = false;
+
+			function countDown(color) {
+				clicked = true;
+				let deciseconds = 50;
+				let interval1 = setInterval(function () {
+					S.getId("message").textContent = (deciseconds / 10).toFixed(1);
+					if (deciseconds <= 0) {
+						clearInterval(interval1);
+						if (color == "blue") {
+							document.body.style.background = "green";
+						} else {
+							document.body.style.background = "blue";
+						}
+						deciseconds = 100;
+						let interval2 = setInterval(function () {
+							S.getId("message").textContent = (deciseconds / 10).toFixed(1);
+							if (deciseconds <= 0) {
+								document.body.style.background = "white";
+								S.getId("message").textContent = "Ready";
+								clicked = false;
+								clearInterval(interval2);
+							}
+							deciseconds--;
+						}, 100);
+					}
+					deciseconds--;
+				}, 100);
+			}
+			S.listen("button1", "click", function () {
+				if (!clicked) {
+					document.body.style.background = "blue";
+					countDown("blue");
+				}
+			});
+			S.listen("button2", "click", function () {
+				if (!clicked) {
+					document.body.style.background = "green";
+					countDown("green");
+				}
+			});
+		</script>
+		<link rel="stylesheet" href="https://epicenterprograms.github.io/standards/formatting/foundation.css">
+		<style>
+			body {
+				background: white;
+			}
+			h1.main-title {
+				color: black;
+			}
+			#button1 {
+				margin: 4rem;
+				border: 1rem solid darkblue;
+				border-radius: 5rem;
+				width: 10rem;
+				height: 10rem;
+				background: blue;
+			}
+			#button2 {
+				margin: 4rem;
+				border: 1rem solid darkgreen;
+				border-radius: 5rem;
+				width: 10rem;
+				height: 10rem;
+				background: green;
+			}
+		</style>
+	</head>
+	<body>
+		<h1 class="main-title">
+			Tournament buttons
+		</h1>
+		<br>
+		<br>
+		<h2 id="message">
+			Ready
+		</h2>
+		<br>
+		<br>
+		<button id="button1"></button>
+		<button id="button2"></button>
+	</body>
+</html>
