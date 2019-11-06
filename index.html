@@ -9,6 +9,9 @@
 		<script>
 			var S = Standards.general;
 			var clicked = false;
+			var leftColor = 120;
+			var rightColor = 240;
+			var buzzer;
 
 			function countDown(color) {
 				clicked = true;
@@ -17,15 +20,21 @@
 					S.getId("message").textContent = (deciseconds / 10).toFixed(1);
 					if (deciseconds <= 0) {
 						clearInterval(interval1);
-						if (color == "blue") {
-							document.body.style.background = "green";
+						if (buzzer) {
+							buzzer.play("a4-");
+						}
+						if (color == leftColor) {
+							document.body.style.background = "hsl(" + rightColor + ", 100%, 75%)";
 						} else {
-							document.body.style.background = "blue";
+							document.body.style.background = "hsl(" + leftColor + ", 100%, 75%)";
 						}
 						deciseconds = 100;
 						let interval2 = setInterval(function () {
 							S.getId("message").textContent = (deciseconds / 10).toFixed(1);
 							if (deciseconds <= 0) {
+								if (buzzer) {
+									buzzer.play("a4-");
+								}
 								document.body.style.background = "white";
 								S.getId("message").textContent = "Ready";
 								clicked = false;
@@ -39,14 +48,35 @@
 			}
 			S.listen("button1", "click", function () {
 				if (!clicked) {
-					document.body.style.background = "blue";
-					countDown("blue");
+					document.body.style.background = "hsl(" + leftColor + ", 100%, 75%)";
+					countDown(leftColor);
 				}
 			});
 			S.listen("button2", "click", function () {
 				if (!clicked) {
-					document.body.style.background = "green";
-					countDown("green");
+					document.body.style.background = "hsl(" + rightColor + ", 100%, 75%)";
+					countDown(rightColor);
+				}
+			});
+
+			S.listen("leftButtonColor", "change", function () {
+				leftColor = this.value;
+				S.getId("button1").style.background = "hsl(" + leftColor + ", 100%, 50%)";
+				S.getId("button1").style.borderColor = "hsl(" + leftColor + ", 100%, 25%)";
+			});
+			S.listen("rightButtonColor", "change", function () {
+				rightColor = this.value;
+				S.getId("button2").style.background = "hsl(" + rightColor + ", 100%, 50%)";
+				S.getId("button2").style.borderColor = "hsl(" + this.value + ", 100%, 25%)";
+			});
+
+			S.listen("makeBuzzingNoises", "change", function () {
+				if (this.checked) {
+					S.makeToneGenerator().then(function () {
+						buzzer = new S.Sound({ waveform: "sawtooth" });
+					});
+				} else {
+					buzzer = undefined;
 				}
 			});
 		</script>
@@ -60,19 +90,25 @@
 			}
 			#button1 {
 				margin: 4rem;
-				border: 1rem solid darkblue;
+				border: 1rem solid hsl(120, 100%, 25%);
 				border-radius: 5rem;
 				width: 10rem;
 				height: 10rem;
-				background: blue;
+				background: hsl(120, 100%, 50%);
 			}
 			#button2 {
 				margin: 4rem;
-				border: 1rem solid darkgreen;
+				border: 1rem solid hsl(240, 100%, 25%);
 				border-radius: 5rem;
 				width: 10rem;
 				height: 10rem;
-				background: green;
+				background: hsl(240, 100%, 50%);
+			}
+			#leftButtonColor {
+				margin-right: 4rem;
+			}
+			#rightButtonColor {
+				margin-left: 4rem;
 			}
 		</style>
 	</head>
@@ -89,5 +125,11 @@
 		<br>
 		<button id="button1"></button>
 		<button id="button2"></button>
+		<br>
+		<input type="range" id="leftButtonColor" min="0" max="360" value="120">
+		<input type="range" id="rightButtonColor" min="0" max="360" value="240">
+		<br>
+		<br>
+		<input type="checkbox" id="makeBuzzingNoises"><label for="makeBuzzingNoises">Make buzzing noises</label>
 	</body>
 </html>
