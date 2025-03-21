@@ -35,7 +35,7 @@
 								if (buzzer) {
 									buzzer.play("a4-");
 								}
-								document.body.style.background = "white";
+								document.body.style.background = "";
 								S.getId("message").textContent = "Ready";
 								clicked = false;
 								clearInterval(interval2);
@@ -46,13 +46,13 @@
 					deciseconds--;
 				}, 100);
 			}
-			S.listen("button1", "click", function () {
+			S.listen("button1", ["click", "touchstart"], function () {
 				if (!clicked) {
 					document.body.style.background = "hsl(" + leftColor + ", 100%, 75%)";
 					countDown(leftColor);
 				}
 			});
-			S.listen("button2", "click", function () {
+			S.listen("button2", ["click", "touchstart"], function () {
 				if (!clicked) {
 					document.body.style.background = "hsl(" + rightColor + ", 100%, 75%)";
 					countDown(rightColor);
@@ -82,52 +82,53 @@
 		</script>
 		<link rel="stylesheet" href="https://epicenterprograms.github.io/standards/formatting/foundation.css">
 		<style>
-			body {
-				background: white;
-			}
-			h1.main-title {
-				color: black;
-			}
-			#button1 {
+			.button-container button {
+				display: block;
 				margin: 4rem;
-				border: 1rem solid hsl(120, 100%, 25%);
 				border-radius: 5rem;
 				width: 10rem;
 				height: 10rem;
+			}
+			#button1 {
+				border: 1rem solid hsl(120, 100%, 25%);
 				background: hsl(120, 100%, 50%);
 			}
 			#button2 {
-				margin: 4rem;
 				border: 1rem solid hsl(240, 100%, 25%);
-				border-radius: 5rem;
-				width: 10rem;
-				height: 10rem;
 				background: hsl(240, 100%, 50%);
 			}
-			#leftButtonColor {
-				margin-right: 4rem;
-			}
-			#rightButtonColor {
-				margin-left: 4rem;
+
+			@media (max-width: 1000px) {
+				.button-container {
+					display: block;
+				}
+				.button-container button {
+					margin: 4rem auto 4rem;
+				}
 			}
 		</style>
 	</head>
-	<body>
+	<body class="generic-background">
 		<h1 class="main-title">
 			Tournament buttons
 		</h1>
 		<br>
-		<br>
-		<h2 id="message">
+		<h2 class="generic-color" id="message">
 			Ready
 		</h2>
 		<br>
+		<div class="button-container">
+			<button id="button1"></button>
+			<input type="range" id="leftButtonColor" min="0" max="360" value="120">
+		</div>
+		<div class="button-container">
+			<button style="visibility:hidden"></button>
+		</div>
+		<div class="button-container">
+			<button id="button2"></button>
+			<input type="range" id="rightButtonColor" min="0" max="360" value="240">
+		</div>
 		<br>
-		<button id="button1"></button>
-		<button id="button2"></button>
-		<br>
-		<input type="range" id="leftButtonColor" min="0" max="360" value="120">
-		<input type="range" id="rightButtonColor" min="0" max="360" value="240">
 		<br>
 		<br>
 		<input type="checkbox" id="makeBuzzingNoises"><label for="makeBuzzingNoises">Make buzzing noises</label>
